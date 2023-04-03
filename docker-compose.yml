@@ -1,0 +1,73 @@
+version: "3"
+services:
+  web:
+    container_name: asgard
+    build: .
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - 80:80
+  
+  mysql_db:
+    container_name: mimir
+    image: mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      TZ: Europe/Budapest
+    ports:
+      - 3306:3306
+
+  phpmyadmin:
+    container_name: baldur
+    image: phpmyadmin:latest
+    restart: always
+    ports:
+      - 8081:80
+    environment:
+      PMA_PASSWORD: root
+      PMA_HOST: mysql_db
+      PMA_PORT: 3306
+      TZ: Europe/Budapest
+    links:
+      - mysql_db:mysql_db
+
+  composer:
+    container_name: bragi
+    image: composer:latest
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    networks:
+      - laravel
+
+  npm:
+    container_name: tyr
+    image: node:latest
+    volumes:
+      - ./src:/var/www/html
+    working_dir: /var/www/html
+    entrypoint: ['npm']
+    networks:
+      - laravel
+
+  #artisan:
+  #  container_name: freja
+  #  build:
+  #    context: ./dockerfiles
+  #    dockerfile: php.dockerfile
+  #  volumes:
+  #    - ./src:/var/www/html
+  #  depends_on:
+  #    - mysql_db
+  #  entrypoint: ['/var/www/html/artisan']
+  #  networks:
+  #    - laravel
+
+networks:
+  laravel:
+
+volumes:
+  src:
+    driver: local

@@ -19,6 +19,8 @@ Route::get('/', function () {
 });
 
 Route::view('/test','myapp',['name'=>'Davey']);
+Route::view('/vue','home');
+
 
 Route::get('/request-test', function(){ 
     return view('request-inputs',[
@@ -37,3 +39,7 @@ Route::get('/posts/{post}',[PostsController::class,'show']);
 //        'post' => $posts[$post] ?? 'Nothing here yet.'
 //    ]);
 //});
+
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

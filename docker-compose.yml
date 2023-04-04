@@ -7,6 +7,8 @@ services:
       - ./src:/var/www/html
     ports:
       - 80:80
+      - 5173:5173
+    command: "php artisan serve --host=0.0.0.0 --port=80"
   
   mysql_db:
     container_name: mimir
@@ -49,6 +51,8 @@ services:
       - ./src:/var/www/html
     working_dir: /var/www/html
     entrypoint: ['npm']
+    ports:
+      - 5173:5173
     networks:
       - laravel
 
